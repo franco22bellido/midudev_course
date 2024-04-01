@@ -1,7 +1,10 @@
 const express = require('express')
+const logger = require('./loggerMiddleware.js')
 const app = express()
 
 app.use(express.json())
+
+app.use(logger)
 
 let notes = [
     {
