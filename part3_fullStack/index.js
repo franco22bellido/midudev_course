@@ -1,5 +1,7 @@
+require('dotenv').config()
 const connectDB = require('./mongo.js')
 const express = require('express')
+const cors = require('cors')
 const logger = require('./loggerMiddleware.js')
 const Note = require('./models/NoteSchema.js')
 connectDB()
@@ -7,7 +9,7 @@ connectDB()
 const app = express()
 
 app.use(express.json())
-
+app.use(cors())
 app.use(logger)
 
 app.get('/', (req, res) => {
@@ -70,7 +72,7 @@ app.post('/api/notes', (req, res) => {
     res.status(201).json(newNote)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server on port ${PORT}`)
 })
