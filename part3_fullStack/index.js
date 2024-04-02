@@ -1,66 +1,72 @@
+const connectDB = require('./mongo.js')
 const express = require('express')
 const logger = require('./loggerMiddleware.js')
+const Note = require('./models/NoteSchema.js')
+connectDB()
+
 const app = express()
 
 app.use(express.json())
 
 app.use(logger)
 
-let notes = [
-    {
-        id: 1,
-        content: 'estudiar pruebas e2e',
-        date: '1/04/2024',
-        important: true
-    },
-    {
-        id: 2,
-        content: 'estudiar cypress',
-        date: '2/04/2024',
-        important: true
-    },
-    {
-        id: 3,
-        content: 'practicar sockets con nestJs',
-        date: '07/04/2024',
-        important: true
-    }
-]
-
 app.get('/', (req, res) => {
     res.send('<h1>hello world</h1>')
 })
 
-app.get('/api/notes', (req, res) => {
-    res.json(notes)
+app.get('/api/notes', async (req, res) => {
+    const notesFound = await Note.find({})
+    if (!notesFound) {
+        return res.status(404).json({ message: 'notes not found' })
+    }
+    res.status(200).json(notesFound)
 })
 app.get('/api/notes/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const note = notes.find((note) => note.id === id)
-    if (!note) {
-        res.status(404).end()
-    }
-    res.json({
-        note
-    })
+    const id = req.params.id
+    Note.findById(id)
+        .then((noteFound) => {
+            if (!noteFound) {
+                return res.status(404).end()
+            }
+            res.status(200).json(noteFound)
+        })
+        .catch((err) => {
+            if (err.name === 'CastError') {
+                return res.status(400).json({ message: 'objectId malformed' })
+            }
+        })
 })
 app.delete('/api/notes/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    notes = notes.filter(note => note.id !== id)
-    res.status(204).end()
+    const id = req.params.id
+    Note.findByIdAndDelete(id)
+        .then((noteFound) => {
+            if (!noteFound) {
+                return res.status(404).end()
+            }
+            res.status(204).end()
+        })
+        .catch((err) => {
+            console.log(err)
+            if (err.name === 'CastError') {
+                return res.status(400).json({ message: 'objectId malformed' })
+            }
+            return res.status(500).json({ message: 'internal server error' })
+        })
 })
 app.post('/api/notes', (req, res) => {
     const note = req.body
-    const ids = notes.map((note) => note.id)
-    const maxId = Math.max(...ids)
 
-    const newNote = {
-        id: maxId + 1,
-        content: note.content,
-        important: typeof note.important !== 'undefined' ? note.important : false,
-        date: new Date().toISOString
+    if (!note.content) {
+        return res.status(400).json({ message: 'content is required' })
     }
-    notes = notes.concat(newNote)
+
+    const newNote = new Note({
+        content: note.content,
+        date: Date.now(),
+        important: typeof note.important !== 'undefined' ? note.important : false
+    })
+
+    newNote.save()
     res.status(201).json(newNote)
 })
 
