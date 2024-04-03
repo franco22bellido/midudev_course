@@ -55,6 +55,26 @@ app.delete('/api/notes/:id', (req, res) => {
             return res.status(500).json({ message: 'internal server error' })
         })
 })
+app.put('/api/notes/:id', (req, res) => {
+    const id = req.param.id
+    const note = req.body
+
+    const newNoteInfo = {
+        content: note.content,
+        important: note.important
+    }
+
+    Note.findOneAndUpdate(id, newNoteInfo)
+        .then((noteUpdated) => {
+            res.status(200).json({ noteUpdated })
+        })
+        .catch((err) => {
+            if (err.name === 'CastError') {
+                return res.status(400).json({ message: 'objectId malformed' })
+            }
+            return res.status(500).json({ message: err.name })
+        })
+})
 app.post('/api/notes', (req, res) => {
     const note = req.body
 
