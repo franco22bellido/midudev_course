@@ -4,6 +4,7 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('./loggerMiddleware.js')
 const Note = require('./models/NoteSchema.js')
+const handleErrors = require('./handleErrors.js')
 connectDB()
 
 const app = express()
@@ -23,7 +24,7 @@ app.get('/api/notes', async (req, res) => {
     }
     res.status(200).json(notesFound)
 })
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res, next) => {
     const id = req.params.id
     Note.findById(id)
         .then((noteFound) => {
@@ -33,12 +34,10 @@ app.get('/api/notes/:id', (req, res) => {
             res.status(200).json(noteFound)
         })
         .catch((err) => {
-            if (err.name === 'CastError') {
-                return res.status(400).json({ message: 'objectId malformed' })
-            }
+            next(err)
         })
 })
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, res, next) => {
     const id = req.params.id
     Note.findByIdAndDelete(id)
         .then((noteFound) => {
@@ -48,14 +47,10 @@ app.delete('/api/notes/:id', (req, res) => {
             res.status(204).end()
         })
         .catch((err) => {
-            console.log(err)
-            if (err.name === 'CastError') {
-                return res.status(400).json({ message: 'objectId malformed' })
-            }
-            return res.status(500).json({ message: 'internal server error' })
+            next(err)
         })
 })
-app.put('/api/notes/:id', (req, res) => {
+app.put('/api/notes/:id', (req, res, next) => {
     const id = req.param.id
     const note = req.body
 
@@ -69,10 +64,7 @@ app.put('/api/notes/:id', (req, res) => {
             res.status(200).json({ noteUpdated })
         })
         .catch((err) => {
-            if (err.name === 'CastError') {
-                return res.status(400).json({ message: 'objectId malformed' })
-            }
-            return res.status(500).json({ message: err.name })
+            next(err)
         })
 })
 app.post('/api/notes', (req, res) => {
@@ -91,6 +83,8 @@ app.post('/api/notes', (req, res) => {
     newNote.save()
     res.status(201).json(newNote)
 })
+
+app.use(handleErrors)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
