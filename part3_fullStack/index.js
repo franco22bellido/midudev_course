@@ -1,11 +1,10 @@
 require('dotenv').config()
-const connectDB = require('./mongo.js')
+require('./mongo.js')
 const express = require('express')
 const cors = require('cors')
 const logger = require('./loggerMiddleware.js')
 const Note = require('./models/NoteSchema.js')
 const handleErrors = require('./handleErrors.js')
-connectDB()
 
 const app = express()
 
@@ -87,6 +86,11 @@ app.post('/api/notes', (req, res) => {
 app.use(handleErrors)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server on port ${PORT}`)
 })
+
+module.exports = {
+    app,
+    server
+}
