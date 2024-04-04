@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "Franco Bellido",
@@ -19,16 +19,23 @@
     "mongoose": "8.2.4"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "3.1.0",
     "standard": "17.1.0"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json",
+    "env": {
+      "jest": true
+    },
     "rules": {
       "indent": [
         "error",
         4
       ]
     }
+  },
+  "jest": {
+    "testEnviroment": "node"
   }
 }
