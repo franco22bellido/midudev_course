@@ -80,7 +80,7 @@ app.post('/api/notes', (req, res) => {
     })
 
     newNote.save()
-    res.status(201).json(newNote)
+    res.status(200).json(newNote)
 })
 
 app.use(handleErrors)

@@ -1,21 +1,9 @@
-const supertest = require('supertest')
-const { app, server } = require('../index.js')
+const { server } = require('../index.js')
 const mongoose = require('../mongo.js')
 const Note = require('../models/NoteSchema.js')
-const api = supertest(app)
 
-const initialNotes = [
-    {
-        content: 'learning FullStack JS with midudev',
-        important: true,
-        date: new Date()
-    },
-    {
-        content: 'siguelo en https://midu.tube',
-        important: true,
-        date: new Date()
-    }
-]
+const { initialNotes, api, getAllContentsFromNotes } = require('./helpers.js')
+
 beforeEach(async () => {
     await Note.deleteMany({})
     const note1 = new Note(initialNotes[0])
@@ -34,17 +22,42 @@ test('there are two notes', async () => {
     const response = await api.get('/api/notes')
     expect(response.body).toHaveLength(initialNotes.length)
 })
-test('the first note is about midudev', async () => {
-    const response = await api.get('/api/notes')
-    expect(response.body[0].content).toBe('learning FullStack JS with midudev')
-})
 
-test('contain the response.body array a specific words?', async () => {
-    const response = await api.get('/api/notes')
-
-    const contents = response.body.map(note => note.content)
+test('the response.body array contain a specific words?', async () => {
+    const { contents } = await getAllContentsFromNotes()
 
     expect(contents).toContain('learning FullStack JS with midudev')
+})
+
+test('a valid note can be added', async () => {
+    const newNote = {
+        content: 'Proximamente async/await',
+        important: true,
+        date: Date.now()
+    }
+    await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const { contents, response } = await getAllContentsFromNotes()
+    expect(response.body).toHaveLength(initialNotes.length + 1)
+    expect(contents).toContain(newNote.content)
+})
+test('note when content is not added', async () => {
+    const newNote = {
+        important: true,
+        date: Date.now()
+    }
+    await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/notes')
+    expect(response.body).toHaveLength(initialNotes.length)
 })
 
 afterAll(() => {
