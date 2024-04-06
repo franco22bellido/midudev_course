@@ -81,6 +81,14 @@ test('try to delete with an invalid id', async () => {
     const { response: secondResponse } = await getAllContentsFromNotes()
     expect(secondResponse.body).toHaveLength(initialNotes.length)
 })
+test('try to delete an id when it does not exist', async () => {
+    await api
+        .delete('/api/notes/000000000000000000000000')
+        .expect(404)
+
+    const { response: secondResponse } = await getAllContentsFromNotes()
+    expect(secondResponse.body).toHaveLength(initialNotes.length)
+})
 
 afterAll(() => {
     server.close()

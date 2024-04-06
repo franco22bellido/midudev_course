@@ -36,18 +36,18 @@ app.get('/api/notes/:id', (req, res, next) => {
             next(err)
         })
 })
-app.delete('/api/notes/:id', (req, res, next) => {
+app.delete('/api/notes/:id', async (req, res, next) => {
     const id = req.params.id
-    Note.findByIdAndDelete(id)
-        .then((noteFound) => {
-            if (!noteFound) {
-                return res.status(404).end()
-            }
-            res.status(204).end()
-        })
-        .catch((err) => {
-            next(err)
-        })
+
+    try {
+        const noteDeleted = await Note.findByIdAndDelete(id)
+        if (!noteDeleted) {
+            return res.status(404).end()
+        }
+        return res.status(204).end()
+    } catch (error) {
+        next(error)
+    }
 })
 app.put('/api/notes/:id', (req, res, next) => {
     const id = req.param.id
