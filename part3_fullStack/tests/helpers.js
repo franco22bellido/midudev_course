@@ -12,6 +12,11 @@ const initialNotes = [
         content: 'siguelo en https://midu.tube',
         important: true,
         date: new Date()
+    },
+    {
+        content: 'todos los tests deben ser predecibles',
+        important: true,
+        date: new Date()
     }
 ]
 const getAllContentsFromNotes = async () => {

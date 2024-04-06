@@ -6,10 +6,16 @@ const { initialNotes, api, getAllContentsFromNotes } = require('./helpers.js')
 
 beforeEach(async () => {
     await Note.deleteMany({})
-    const note1 = new Note(initialNotes[0])
-    await note1.save()
-    const note2 = new Note(initialNotes[1])
-    await note2.save()
+    // parallel
+    // const newNotes = initialNotes.map((note) => new Note(note))
+    // const promises = newNotes.map(note => note.save())
+    // await Promise.all(promises)
+
+    // sequential
+    for (const note of initialNotes) {
+        const newNote = new Note(note)
+        await newNote.save()
+    }
 })
 
 test('notes are returned as json', async () => {
