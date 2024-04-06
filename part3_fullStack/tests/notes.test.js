@@ -24,7 +24,7 @@ test('notes are returned as json', async () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 })
-test('there are two notes', async () => {
+test('there are the same notes as in initalNotes', async () => {
     const response = await api.get('/api/notes')
     expect(response.body).toHaveLength(initialNotes.length)
 })
@@ -94,6 +94,51 @@ test('try to delete an id when it does not exist', async () => {
 
     const { response: secondResponse } = await getAllContentsFromNotes()
     expect(secondResponse.body).toHaveLength(initialNotes.length)
+})
+
+test('a note is found', async () => {
+    const { response } = await getAllContentsFromNotes()
+    const { body: notes } = response
+    const noteOne = notes[0]
+
+    await api
+        .get(`/api/notes/${noteOne._id}`)
+        .expect(200)
+})
+test('a note does not exist return 404', async () => {
+    await api
+        .get('/api/notes/000000000000000000000000')
+        .expect(404)
+})
+test('invalid id return 400', async () => {
+    await api
+        .get('/api/notes/24192')
+        .expect(400)
+})
+
+test('one note is update', async () => {
+    const { response } = await getAllContentsFromNotes()
+    const { body: notes } = response
+    const noteToUpdate = notes[0]
+
+    const newValuesOfNote = {
+        content: 'making tests of endpoint update',
+        important: true
+    }
+    await api
+        .put(`/api/notes/${noteToUpdate._id}`)
+        .send(newValuesOfNote)
+        .expect(200)
+})
+test('one note to try update does not exist', async () => {
+    const newValuesOfNote = {
+        content: 'making tests of endpoint update',
+        important: true
+    }
+    await api
+        .put('/api/notes/000000000000000000000000')
+        .send(newValuesOfNote)
+        .expect(404)
 })
 
 afterAll(() => {

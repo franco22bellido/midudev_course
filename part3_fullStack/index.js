@@ -23,18 +23,16 @@ app.get('/api/notes', async (req, res) => {
     }
     res.status(200).json(notesFound)
 })
-app.get('/api/notes/:id', (req, res, next) => {
+app.get('/api/notes/:id', async (req, res, next) => {
     const id = req.params.id
-    Note.findById(id)
-        .then((noteFound) => {
-            if (!noteFound) {
-                return res.status(404).end()
-            }
-            res.status(200).json(noteFound)
-        })
-        .catch((err) => {
-            next(err)
-        })
+
+    try {
+        const noteFound = await Note.findById(id)
+        if (!noteFound) return res.status(404).end()
+        res.status(200).json(noteFound)
+    } catch (error) {
+        next(error)
+    }
 })
 app.delete('/api/notes/:id', async (req, res, next) => {
     const id = req.params.id
@@ -49,22 +47,23 @@ app.delete('/api/notes/:id', async (req, res, next) => {
         next(error)
     }
 })
-app.put('/api/notes/:id', (req, res, next) => {
-    const id = req.param.id
+app.put('/api/notes/:id', async (req, res, next) => {
+    const id = req.params.id
     const note = req.body
 
-    const newNoteInfo = {
+    const newNoteValues = {
+        _id: id,
         content: note.content,
         important: note.important
     }
-
-    Note.findOneAndUpdate(id, newNoteInfo)
-        .then((noteUpdated) => {
-            res.status(200).json({ noteUpdated })
-        })
-        .catch((err) => {
-            next(err)
-        })
+    try {
+        const noteFound = await Note.findById(id)
+        if (!noteFound) return res.status(404).end()
+        const noteUpdate = await Note.updateOne(newNoteValues)
+        return res.status(200).json(noteUpdate)
+    } catch (error) {
+        next(error)
+    }
 })
 app.post('/api/notes', async (req, res, next) => {
     const note = req.body
