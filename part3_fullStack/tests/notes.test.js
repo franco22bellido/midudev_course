@@ -60,6 +60,28 @@ test('note when content is not added', async () => {
     expect(response.body).toHaveLength(initialNotes.length)
 })
 
+test('a note can be deleted ', async () => {
+    const { response: firstResponse } = await getAllContentsFromNotes()
+    const { body: notes } = firstResponse
+    const noteToDelete = notes[0]
+
+    await api
+        .delete(`/api/notes/${noteToDelete._id}`)
+        .expect(204)
+
+    const { response: secondResponse, contents } = await getAllContentsFromNotes()
+    expect(secondResponse.body).toHaveLength(initialNotes.length - 1)
+    expect(contents).not.toContain(noteToDelete.contents)
+})
+test('try to delete with an invalid id', async () => {
+    await api
+        .delete('/api/notes/123123')
+        .expect(400)
+
+    const { response: secondResponse } = await getAllContentsFromNotes()
+    expect(secondResponse.body).toHaveLength(initialNotes.length)
+})
+
 afterAll(() => {
     server.close()
     mongoose.connection.close()

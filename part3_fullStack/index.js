@@ -66,7 +66,7 @@ app.put('/api/notes/:id', (req, res, next) => {
             next(err)
         })
 })
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', async (req, res, next) => {
     const note = req.body
 
     if (!note.content) {
@@ -79,8 +79,12 @@ app.post('/api/notes', (req, res) => {
         important: typeof note.important !== 'undefined' ? note.important : false
     })
 
-    newNote.save()
-    res.status(200).json(newNote)
+    try {
+        const savedNote = await newNote.save()
+        res.status(200).json(savedNote)
+    } catch (error) {
+        next(error)
+    }
 })
 
 app.use(handleErrors)
