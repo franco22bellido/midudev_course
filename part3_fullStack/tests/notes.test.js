@@ -143,6 +143,7 @@ describe('UPDATE ONE NOTE', () => {
             content: 'making tests of endpoint update',
             important: true
         }
+
         await api
             .put('/api/notes/000000000000000000000000')
             .send(newValuesOfNote)

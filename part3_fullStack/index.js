@@ -5,6 +5,7 @@ const cors = require('cors')
 const logger = require('./loggerMiddleware.js')
 const Note = require('./models/NoteSchema.js')
 const handleErrors = require('./handleErrors.js')
+const usersRouter = require('./controllers/users')
 
 const app = express()
 
@@ -85,6 +86,8 @@ app.post('/api/notes', async (req, res, next) => {
         next(error)
     }
 })
+
+app.use('/api/users', usersRouter)
 
 app.use(handleErrors)
 
