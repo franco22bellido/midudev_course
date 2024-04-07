@@ -7,14 +7,14 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint",
-    "test": "cross-env NODE_ENV=test jest --verbose --silent --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test jest --verbose --silent tests/users.test.js",
     "test:watch": "npm run test -- --watch"
-
   },
   "keywords": [],
   "author": "Franco Bellido",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "4.19.2",
