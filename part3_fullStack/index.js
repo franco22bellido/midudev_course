@@ -6,6 +6,7 @@ const logger = require('./loggerMiddleware.js')
 const handleErrors = require('./handleErrors.js')
 const usersRouter = require('./controllers/users.js')
 const notesRouter = require('./controllers/notes.js')
+const loginRouter = require('./controllers/login.js')
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/auth', loginRouter)
 
 app.use(handleErrors)
 

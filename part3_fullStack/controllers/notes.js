@@ -2,6 +2,7 @@ const { Router } = require('express')
 const notesRouter = Router()
 const User = require('../models/User')
 const Note = require('../models/NoteSchema')
+const validateToken = require('../middlewares/validateToken')
 
 notesRouter.get('/', async (req, res) => {
     const notesFound = await Note.find({}).populate('user', {
@@ -54,8 +55,9 @@ notesRouter.put('/:id', async (req, res, next) => {
         next(error)
     }
 })
-notesRouter.post('/', async (req, res, next) => {
-    const { content, important, userId } = req.body
+notesRouter.post('/', validateToken, async (req, res, next) => {
+    const { userId } = req
+    const { content, important } = req.body
 
     try {
         const userFound = await User.findById(userId)
