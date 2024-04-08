@@ -28,7 +28,11 @@ usersRouter.post('/', async (req, res, next) => {
     }
 })
 usersRouter.get('/', async (req, res) => {
-    const users = await User.find({})
+    const users = await User.find({}).populate('notes', {
+        content: 1,
+        date: 1,
+        important: 1
+    })
     return res.status(200).json(users)
 })
 usersRouter.get('/:id', async (req, res, next) => {
