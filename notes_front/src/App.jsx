@@ -9,18 +9,18 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       axios.get('https://jsonplaceholder.typicode.com/posts')
-           .then((response)=> {
-            const {data} = response
-            setNotes(data)
-            setLoading(false)
-           })
+        .then((response) => {
+          const { data } = response
+          setNotes(data)
+          setLoading(false)
+        })
     }, 2000);
-   }, [])
+  }, [])
 
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [loading, setLoading] = useState(true)
-  
+
   const handleChange = (event) => {
     setNewNote(event.target.value)
   }
@@ -28,12 +28,17 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault()
     const noteToAddToState = {
-      id: notes.length + 1,
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random < 0.5
+      title: newNote,
+      body: newNote,
+      userId: 1
     }
-    setNotes([...notes, noteToAddToState])
+    axios
+      .post('https://jsonplaceholder.typicode.com/posts', noteToAddToState)
+      .then(response => {
+        const { data } = response
+        setNotes(notes => notes.concat(data))
+      })
+
     setNewNote('')
   }
 
