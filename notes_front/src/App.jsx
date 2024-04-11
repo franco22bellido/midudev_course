@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import './App.css'
+import Note from './Note'
 
 const notes = [
   {
@@ -23,14 +25,16 @@ const notes = [
 
 function App() {
 
+  if (typeof notes === "undefined" || notes.length === 0) {
+    return "No tenemos notas que mostrar"
+  }
+
   return (
-    <div>
+    <ul>
       {
-        notes.map((notes)=> {
-          return notes.id
-        })
+        notes.map((note, i) => (<Note key={note.id} content={note.content} date={note.date}/>))
       }
-    </div>
+    </ul>
   )
 }
 
