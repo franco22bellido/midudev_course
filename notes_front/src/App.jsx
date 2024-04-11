@@ -2,39 +2,34 @@ import { useState } from 'react'
 import './App.css'
 import Note from './Note'
 
-const notes = [
-  {
-    id: 1,
-    content: 'HTML is easy',
-    date: '2019-05-30T17:30:31.098Z',
-    important: true
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only JavaScript',
-    date: '2019-05-30T17:30:31.098Z',
-    important: false
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of',
-    date: '2019-05-30T17:30:31.098Z',
-    important: true
-  }
-]
 
-function App() {
+function App(props) {
 
+  const [notes, setNotes] = useState(props.notes)
+  const [newNote, setNewNote] = useState('')
   if (typeof notes === "undefined" || notes.length === 0) {
     return "No tenemos notas que mostrar"
   }
 
+  const handleChange = (event)=> {
+    setNewNote(event.target.value)
+  }
+
+  const handleClick = ()=> {
+    console.log(newNote)
+  }
   return (
-    <ul>
-      {
-        notes.map((note, i) => (<Note key={note.id} content={note.content} date={note.date}/>))
-      }
-    </ul>
+    <section>
+      <h1>Notes</h1>
+      <ul>
+        {notes.map((note, i) => (<Note key={note.id} content={note.content} date={note.date} />))}
+      </ul>
+    <div>
+      <input type='text' onChange={handleChange} value={newNote}/>
+      <button onClick={handleClick}>Crear nota</button>
+    </div>
+
+    </section>
   )
 }
 
