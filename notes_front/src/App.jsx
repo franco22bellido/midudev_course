@@ -1,25 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Note from './Note'
+import axios from 'axios'
 
 
-function App(props) {
+function App() {
 
-  const [notes, setNotes] = useState(props.notes)
+  useEffect(() => {
+    setTimeout(() => {
+      axios.get('https://jsonplaceholder.typicode.com/posts')
+           .then((response)=> {
+            const {data} = response
+            setNotes(data)
+            setLoading(false)
+           })
+    }, 2000);
+   }, [])
+
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
-  const [showAll, setShowAll] = useState(true)
-  if (typeof notes === "undefined" || notes.length === 0) {
-    return "No tenemos notas que mostrar"
-  }
-
+  const [loading, setLoading] = useState(true)
+  
   const handleChange = (event) => {
     setNewNote(event.target.value)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("crear nota")
-    console.log(newNote)
     const noteToAddToState = {
       id: notes.length + 1,
       content: newNote,
@@ -29,21 +36,22 @@ function App(props) {
     setNotes([...notes, noteToAddToState])
     setNewNote('')
   }
-  const handleShowAll = ()=> {
-    setShowAll(()=> !showAll)
-  }
+
   return (
     <section>
       <h1>Notes</h1>
-      <button onClick={handleShowAll}>{showAll ? 'Show all' : 'show important only'}</button>
-      <ul>
-        {notes.filter((note)=> showAll ? true : note.important === true)
-        .map((note, i) => (<Note key={note.id} content={note.content} date={note.date} />))}
-      </ul>
       <form onSubmit={handleSubmit}>
         <input type='text' onChange={handleChange} value={newNote} />
         <button>Crear nota</button>
       </form>
+      {
+        loading && 'cargando...'
+      }
+      <ul>
+        {
+          notes.map(note => (<Note key={note.id} title={note.title} body={note.body} />))
+        }
+      </ul>
     </section>
   )
 }
