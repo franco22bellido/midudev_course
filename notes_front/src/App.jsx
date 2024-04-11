@@ -11,12 +11,21 @@ function App(props) {
     return "No tenemos notas que mostrar"
   }
 
-  const handleChange = (event)=> {
+  const handleChange = (event) => {
     setNewNote(event.target.value)
   }
 
-  const handleClick = ()=> {
+  const handleClick = () => {
+    console.log("crear nota")
     console.log(newNote)
+    const noteToAddToState = {
+      id: notes.length + 1,
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random < 0.5
+    }
+    setNotes([...notes, noteToAddToState])
+    setNewNote('')
   }
   return (
     <section>
@@ -24,10 +33,10 @@ function App(props) {
       <ul>
         {notes.map((note, i) => (<Note key={note.id} content={note.content} date={note.date} />))}
       </ul>
-    <div>
-      <input type='text' onChange={handleChange} value={newNote}/>
-      <button onClick={handleClick}>Crear nota</button>
-    </div>
+      <div>
+        <input type='text' onChange={handleChange} value={newNote} />
+        <button onClick={handleClick}>Crear nota</button>
+      </div>
 
     </section>
   )
