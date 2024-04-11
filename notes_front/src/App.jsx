@@ -7,6 +7,7 @@ function App(props) {
 
   const [notes, setNotes] = useState(props.notes)
   const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
   if (typeof notes === "undefined" || notes.length === 0) {
     return "No tenemos notas que mostrar"
   }
@@ -15,7 +16,8 @@ function App(props) {
     setNewNote(event.target.value)
   }
 
-  const handleClick = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     console.log("crear nota")
     console.log(newNote)
     const noteToAddToState = {
@@ -27,17 +29,21 @@ function App(props) {
     setNotes([...notes, noteToAddToState])
     setNewNote('')
   }
+  const handleShowAll = ()=> {
+    setShowAll(()=> !showAll)
+  }
   return (
     <section>
       <h1>Notes</h1>
+      <button onClick={handleShowAll}>{showAll ? 'Show all' : 'show important only'}</button>
       <ul>
-        {notes.map((note, i) => (<Note key={note.id} content={note.content} date={note.date} />))}
+        {notes.filter((note)=> showAll ? true : note.important === true)
+        .map((note, i) => (<Note key={note.id} content={note.content} date={note.date} />))}
       </ul>
-      <div>
+      <form onSubmit={handleSubmit}>
         <input type='text' onChange={handleChange} value={newNote} />
-        <button onClick={handleClick}>Crear nota</button>
-      </div>
-
+        <button>Crear nota</button>
+      </form>
     </section>
   )
 }
