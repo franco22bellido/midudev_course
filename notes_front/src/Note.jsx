@@ -1,8 +1,8 @@
-const Note = ({ title, body }) => {
+const Note = ({ title }) => {
   return (
     <li>
       <p>{title}</p>
-      <small>{body}</small>
+      <button>make impontant</button>
     </li>)
 }
 

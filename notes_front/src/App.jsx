@@ -38,13 +38,14 @@ function App() {
 
   return (
     <section>
-      <h1>Notes</h1>
+      <h1 style={{color: "green"}}>Notes</h1>
+      <button>Show important</button>
       <form onSubmit={handleSubmit}>
         <input type='text' onChange={handleChange} value={newNote} />
-        <button>Crear nota</button>
+        <button>Save</button>
       </form>
       {
-        loading && 'cargando...'
+        loading && 'loading...'
       }
       <ul>
         {
