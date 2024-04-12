@@ -1,7 +1,7 @@
-const Note = ({ title }) => {
+const Note = ({ content }) => {
   return (
     <li>
-      <p>{title}</p>
+      <p>{content}</p>
       <button>make impontant</button>
     </li>)
 }

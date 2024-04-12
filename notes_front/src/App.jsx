@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Note from './Note'
-import { create, getAll } from './services/notes/notes'
+import { create, getAll, setToken } from './services/notes/notes'
 import { login } from './services/notes/login'
 
 
@@ -15,6 +15,14 @@ function App() {
       })
     }, 2000);
   }, [])
+  useEffect(()=> {
+    const loggedUserJSON = window.localStorage.getItem('USER_LOCAL_STORAGE')
+    if(loggedUserJSON) {
+      const userJSON = JSON.parse(loggedUserJSON)
+      setUser(userJSON)
+      setToken(userJSON.token)
+    }
+  }, [])
 
   const [notes, setNotes] = useState([])
   const [error, setError] = useState(null)
@@ -26,17 +34,14 @@ function App() {
   const [user, setUser] = useState(null)
 
 
-  const handleSubmit = (e) => {
+  const handleSubmitNote = (e) => {
     e.preventDefault()
     create({
-      title: newNote,
-      body: newNote,
-      userId: 1
+      content: newNote,
     })
       .then(note => {
         return setNotes(notes => [...notes, note])
       })
-
     setNewNote('')
   }
 
@@ -44,9 +49,11 @@ function App() {
     e.preventDefault()
     try {
       const data = await login({ username, password })
-      setUser(data)
-
       console.log(data)
+      window.localStorage.setItem(
+        'USER_LOCAL_STORAGE', JSON.stringify(data)
+      )
+      setToken(data.token)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -83,8 +90,8 @@ function App() {
       <button
         onClick={() => setShowAll((showAll) => !showAll)}>{showAll ? 'show important' : 'show all'}</button>
 
-      <form onSubmit={handleSubmit}>
-        <input type='text' onChange={({target}) => setNewNote(target.value)} value={newNote} />
+      <form onSubmit={handleSubmitNote}>
+        <input type='text' onChange={({ target }) => setNewNote(target.value)} value={newNote} />
         <button>Save</button>
       </form>
       {
@@ -92,7 +99,7 @@ function App() {
       }
       <ul>
         {
-          notes.map(note => (<Note key={note.id} title={note.title} body={note.body} />))
+          notes.map(note => (<Note key={note._id} content={note.content} />))
         }
       </ul>
     </section>
