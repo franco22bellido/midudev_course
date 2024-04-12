@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Note from './Note'
 import { create, getAll } from './services/notes/notes'
+import { login } from './services/notes/login'
+
 
 function App() {
 
@@ -15,15 +17,14 @@ function App() {
   }, [])
 
   const [notes, setNotes] = useState([])
+  const [error, setError] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
-  const handleChange = (event) => {
-    setNewNote(event.target.value)
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -39,36 +40,51 @@ function App() {
     setNewNote('')
   }
 
-  const handleLoginSubmit = (e)=> {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault()
-    console.log("is submitiiiiing", username, password)
+    try {
+      const data = await login({ username, password })
+      setUser(data)
+
+      console.log(data)
+      setUsername('')
+      setPassword('')
+    } catch (error) {
+      setError('Wrong credentials')
+      setTimeout(() => {
+        setError(null)
+      }, 5000);
+    }
+
   }
   return (
     <section>
       <h1 style={{ color: "green" }}>Notes</h1>
 
-      <h2 style={{color: "green"}}>Login</h2>
-        <form onSubmit={handleLoginSubmit}>
-          <input 
+      {error && (<p>{error}</p>)}
+
+      <h2 style={{ color: "green" }}>Login</h2>
+      <form onSubmit={handleLoginSubmit}>
+        <input
           type="text"
           placeholder='username'
           value={username}
           name='username'
-          onChange={({target})=> setUsername(target.value)} />
-          <input 
+          onChange={({ target }) => setUsername(target.value)} />
+        <input
           type="password"
           placeholder='password'
           value={password}
           name='password'
-          onChange={({target})=> setPassword(target.value)} />
-          <button>Login</button>
-        </form>
+          onChange={({ target }) => setPassword(target.value)} />
+        <button>Login</button>
+      </form>
 
       <button
         onClick={() => setShowAll((showAll) => !showAll)}>{showAll ? 'show important' : 'show all'}</button>
 
       <form onSubmit={handleSubmit}>
-        <input type='text' onChange={handleChange} value={newNote} />
+        <input type='text' onChange={({target}) => setNewNote(target.value)} value={newNote} />
         <button>Save</button>
       </form>
       {
