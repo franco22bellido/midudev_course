@@ -16,26 +16,28 @@ function App() {
   const [user, setUser] = useState(null)
   
   useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('USER_LOCAL_STORAGE')
+    if (loggedUserJSON) {
+      const userJSON = JSON.parse(loggedUserJSON)
+      setUser(userJSON.data)
+      setToken(userJSON.data.token)
+      
+    }
+  }, [])
+  useEffect(() => {
     setLoading(true)
     setTimeout(() => {
       getAll().then((notes) => {
         setNotes(notes)
         setLoading(false)
       })
-      .catch(()=> {
+      .catch((e)=> {
+        console.log(e)
         setNotes([])
         setLoading(false)
       })
     }, 2000);
   }, [user])
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('USER_LOCAL_STORAGE')
-    if (loggedUserJSON) {
-      const userJSON = JSON.parse(loggedUserJSON)
-      setUser(userJSON)
-      setToken(userJSON.token)
-    }
-  }, [])
 
 
 
@@ -59,7 +61,6 @@ function App() {
     e.preventDefault()
     try {
       const data = await login({ username, password })
-      console.log(data)
       window.localStorage.setItem(
         'USER_LOCAL_STORAGE', JSON.stringify(data)
       )
