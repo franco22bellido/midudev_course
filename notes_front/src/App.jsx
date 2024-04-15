@@ -8,6 +8,7 @@ import Notes from './components/Notes'
 import LogOut from './components/LogOut'
 
 
+
 function App() {
   const [notes, setNotes] = useState([])
   const [error, setError] = useState(null)
@@ -36,6 +37,7 @@ function App() {
         })
     }, 2000);
   }, [user])
+
 
 
 

@@ -1,9 +1,8 @@
-import axios from "axios";
+import axios from 'axios'
 
-let urlBasic = 'http://localhost:3002/api/auth'
+const baseUrl = 'http://localhost:3002/api/auth'
 
-export const login = async ({username, password})=> {
-    const response = await axios.post(urlBasic, {
-                            username, password})
+export const login = async (credentials)=> {
+    const response = await axios.post(baseUrl, credentials)
     return response.data
 }
