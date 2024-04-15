@@ -5,15 +5,15 @@ const Notes = ({ notes = [] }) => {
 
     return (
         <>
-            {
-                notes.length > 0 ?
-                    <ul>
-                        {
-                            notes.map(note => (<Note key={note._id} content={note.content} />))
-                        }
-                    </ul>
-                    : <p>no hay notas que mostrar</p>
-            }
+        {
+            notes.length > 0 ?
+                <ul>
+                {
+                    notes.map(note => (<Note key={note._id} content={note.content} />))
+                }
+                </ul>
+                : <p>no hay notas que mostrar</p>
+        }
         </>
     )
 }

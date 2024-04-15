@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
+
 module.exports = (req, res, next) => {
     const authorization = req.get('Authorization')
+    console.log(authorization)
     let token = ''
     if (!authorization) return res.status(403).json({ error: 'token no provided' })
     if (authorization.toLowerCase().startsWith('bearer ')) {
