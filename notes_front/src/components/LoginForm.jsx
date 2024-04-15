@@ -31,7 +31,7 @@ const LoginForm = ({ setUser, setToken, setError }) => {
 
     return (
         <>
-            <h2 style={{ color: "green" }}>Login</h2>
+            <h2 style={{ color: "green"}}>Login</h2>
             <form onSubmit={handleLoginSubmit}>
                 <input
                     type="text"

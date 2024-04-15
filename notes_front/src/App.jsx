@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
 import ErrorMessage from './components/ErrorMessage'
 import Notes from './components/Notes'
+import LogOut from './components/LogOut'
 
 
 function App() {
@@ -37,28 +38,27 @@ function App() {
   }, [user])
 
 
-  const handleLogOut = () => {
-    setUser(null)
-    setToken(null)
-    window.localStorage.removeItem('USER_LOCAL_STORAGE')
-  }
-
 
   return (
     <section>
       <h1 style={{ color: "green" }}>Notes</h1>
 
-      <ErrorMessage error={error}/>
+      <ErrorMessage error={error} />
 
-      <LoginForm setError={setError} setToken={setToken} setUser={setUser} />
-
-      <button onClick={() => handleLogOut()}>LogOut</button>
-
-      <NoteForm setNotes={setNotes}/>
       {
-        loading && 'loading...'
+        user ?
+          <>
+            <NoteForm setNotes={setNotes} />
+            <LogOut setToken={setToken} setUser={setUser} />
+            {
+              loading && 'loading...'
+            }
+            <Notes notes={notes} />
+          </>
+          :
+          <LoginForm setError={setError} setToken={setToken} setUser={setUser} />
+
       }
-      <Notes notes={notes}/>
     </section>
   )
 }
