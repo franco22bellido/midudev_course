@@ -17,7 +17,9 @@ export const create = ({content})=> {
         return data
     })
 }
-export const getAll = ()=>  axios.get(baseUrl)
+export const getAll = ()=>  axios.get(baseUrl, {
+  headers: {Authorization : `Bearer ${token}`}
+})
 .then((response) => {
   const { data } = response
   return data

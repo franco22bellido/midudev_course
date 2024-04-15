@@ -1,29 +1,11 @@
-import { useEffect, useState } from 'react'
 import './App.css'
+import { useEffect, useState } from 'react'
 import Note from './Note'
 import { create, getAll, setToken } from './services/notes/notes'
 import { login } from './services/notes/login'
 
 
 function App() {
-
-  useEffect(() => {
-    setTimeout(() => {
-      getAll().then((notes) => {
-        setNotes(notes)
-        setLoading(false)
-      })
-    }, 2000);
-  }, [])
-  useEffect(()=> {
-    const loggedUserJSON = window.localStorage.getItem('USER_LOCAL_STORAGE')
-    if(loggedUserJSON) {
-      const userJSON = JSON.parse(loggedUserJSON)
-      setUser(userJSON)
-      setToken(userJSON.token)
-    }
-  }, [])
-
   const [notes, setNotes] = useState([])
   const [error, setError] = useState(null)
   const [newNote, setNewNote] = useState('')
@@ -32,6 +14,29 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  
+  useEffect(() => {
+    setLoading(true)
+    setTimeout(() => {
+      getAll().then((notes) => {
+        setNotes(notes)
+        setLoading(false)
+      })
+      .catch(()=> {
+        setNotes([])
+        setLoading(false)
+      })
+    }, 2000);
+  }, [user])
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('USER_LOCAL_STORAGE')
+    if (loggedUserJSON) {
+      const userJSON = JSON.parse(loggedUserJSON)
+      setUser(userJSON)
+      setToken(userJSON.token)
+    }
+  }, [])
+
 
 
   const handleSubmitNote = (e) => {
@@ -44,6 +49,11 @@ function App() {
       })
     setNewNote('')
   }
+  const handleLogOut = () => {
+    setUser(null)
+    setToken(null)
+    window.localStorage.removeItem('USER_LOCAL_STORAGE')
+  }
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault()
@@ -53,6 +63,7 @@ function App() {
       window.localStorage.setItem(
         'USER_LOCAL_STORAGE', JSON.stringify(data)
       )
+      setUser(data)
       setToken(data.token)
       setUsername('')
       setPassword('')
@@ -68,7 +79,7 @@ function App() {
     <section>
       <h1 style={{ color: "green" }}>Notes</h1>
 
-      {error && (<p>{error}</p>)}
+      {error && (<p style={{color: "red"}}>{error}</p>)}
 
       <h2 style={{ color: "green" }}>Login</h2>
       <form onSubmit={handleLoginSubmit}>
@@ -86,7 +97,7 @@ function App() {
           onChange={({ target }) => setPassword(target.value)} />
         <button>Login</button>
       </form>
-
+      <button onClick={() => handleLogOut()}>LogOut</button>
       <button
         onClick={() => setShowAll((showAll) => !showAll)}>{showAll ? 'show important' : 'show all'}</button>
 
@@ -97,11 +108,15 @@ function App() {
       {
         loading && 'loading...'
       }
-      <ul>
+      {
+        notes.length > 0 ? 
+        <ul>
         {
           notes.map(note => (<Note key={note._id} content={note.content} />))
         }
-      </ul>
+        </ul>
+      : (<p>Aqui no hay mas que grillos...</p>)
+      }
     </section>
   )
 }
