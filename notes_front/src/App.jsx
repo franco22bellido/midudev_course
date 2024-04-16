@@ -6,6 +6,7 @@ import NoteForm from './components/NoteForm'
 import ErrorMessage from './components/ErrorMessage'
 import Notes from './components/Notes'
 import LogOut from './components/LogOut'
+import Toggable from './components/Toggable'
 
 
 
@@ -46,7 +47,7 @@ function App() {
       <h1 style={{ color: "green" }}>Notes</h1>
 
       <ErrorMessage error={error} />
-
+      <Toggable><h1>holamundo</h1></Toggable>
       {
         user ?
           <>
