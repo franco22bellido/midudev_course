@@ -47,7 +47,6 @@ function App() {
       <h1 style={{ color: "green" }}>Notes</h1>
 
       <ErrorMessage error={error} />
-      <Toggable><h1>holamundo</h1></Toggable>
       {
         user ?
           <>

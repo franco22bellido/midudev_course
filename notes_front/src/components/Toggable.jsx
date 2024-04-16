@@ -1,5 +1,5 @@
 import { useState } from "react"
-const Toggable = ({children}) => {
+const Toggable = ({children, buttonLabel}) => {
 
   const [visible, setVisible] = useState(false)
 
@@ -9,10 +9,10 @@ const Toggable = ({children}) => {
   return (
     <div>
         <div style={hideWhenVisible}>
-            <button onClick={()=> setVisible(true)}>Show children</button>
+            <button onClick={()=> setVisible(true)}>{buttonLabel}</button>
         </div>
         <div style={showWhenVisible}>
-            <button onClick={()=> setVisible(false)}>hide children</button>
+            <button onClick={()=> setVisible(false)}>cancel</button>
             {children}
         </div>
     </div>

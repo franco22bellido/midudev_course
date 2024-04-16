@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { login } from "../services/notes/login"
+import Toggable from "./Toggable"
 
 const LoginForm = ({ setUser, setToken, setError }) => {
     const [username, setUsername] = useState('')
@@ -30,8 +31,8 @@ const LoginForm = ({ setUser, setToken, setError }) => {
 
 
     return (
-        <>
-            <h2 style={{ color: "green"}}>Login</h2>
+        <Toggable buttonLabel={'Show login'}>
+            <h2 style={{ color: "green" }}>Login</h2>
             <form onSubmit={handleLoginSubmit}>
                 <input
                     type="text"
@@ -47,7 +48,7 @@ const LoginForm = ({ setUser, setToken, setError }) => {
                     onChange={({ target }) => setPassword(target.value)} />
                 <button>Login</button>
             </form>
-        </>
+        </Toggable>
     )
 }
 
