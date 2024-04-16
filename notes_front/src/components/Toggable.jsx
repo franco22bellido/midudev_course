@@ -1,29 +1,20 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 const Toggable = ({children}) => {
 
-  const [showChildren, setShowChildren, ] = useState(false)
-  const [display, setDisplay] = useState({})
+  const [visible, setVisible] = useState(false)
 
-  const handleShowChildren = ()=> {
-    setShowChildren((show)=> !show)
-  }
-
-  const showDisplay = ()=>{
-    if(showChildren){
-        setDisplay({display: 'block'})
-    }else{
-        setDisplay({display: 'none'})
-    }
-  }
-  useEffect(()=> {
-    showDisplay()
-  }, [showChildren])
+  
+  const hideWhenVisible = {display: visible ? 'none' : ''}
+  const showWhenVisible = {display: visible ? '' : 'none'}
   return (
     <div>
-        <div style={display}>
+        <div style={hideWhenVisible}>
+            <button onClick={()=> setVisible(true)}>Show children</button>
+        </div>
+        <div style={showWhenVisible}>
+            <button onClick={()=> setVisible(false)}>hide children</button>
             {children}
         </div>
-      <button onClick={()=> handleShowChildren()}>{showChildren ? 'ocultar' : 'mostrar'}</button>
     </div>
   )
 }
