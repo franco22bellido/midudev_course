@@ -2,7 +2,8 @@ const Note = ({ content }) => {
   return (
     <li>
       <p>{content}</p>
-      <button>make impontant</button>
+      <button>make important</button>
+      {/* <small>cuerpo</small> */}
     </li>)
 }
 

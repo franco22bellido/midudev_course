@@ -4,8 +4,8 @@ const User = require('../models/User')
 const Note = require('../models/NoteSchema')
 const validateToken = require('../middlewares/validateToken')
 
-notesRouter.get('/', async (req, res) => {
-    const notesFound = await Note.find({}).populate('user', {
+notesRouter.get('/', validateToken, async (req, res) => {
+    const notesFound = await Note.find({ user: req.userId }).populate('user', {
         username: 1,
         name: 1
     })
